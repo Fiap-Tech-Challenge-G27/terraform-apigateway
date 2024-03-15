@@ -74,6 +74,9 @@ resource "aws_api_gateway_deployment" "api_deployment" {
 
   rest_api_id = aws_api_gateway_rest_api.api.id
 #   stage_name  = "prod"
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 }
 
 # Give API Gateway permissions to invoke the Lambda function
@@ -84,5 +87,5 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
   principal     = "apigateway.amazonaws.com"
 
   # Source ARN for the API Gateway method
-  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/auth"
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/auth/*"
 }
