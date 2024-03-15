@@ -63,7 +63,7 @@ resource "aws_api_gateway_integration" "lambda_integration" {
   resource_id = aws_api_gateway_resource.auth_resource.id
   http_method = aws_api_gateway_method.auth_method.http_method
 
-  integration_http_method = "GET"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = data.terraform_remote_state.lambda.outputs.lambda_function_invoke_arn
 }
