@@ -23,7 +23,10 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: us-east-1
+
+    - name: Create S3 bucket
+      run: aws s3api create-bucket --bucket techchallengestate-g27 --acl private
 
     - name: Terraform init
       run: terraform init
@@ -31,24 +34,5 @@ jobs:
     - name: Terraform plan
       run: terraform plan
 
-    - name: Request approval
-      id: approval
-      uses: "actions/github-script@v7"
-      with:
-        script: |
-          const response = await github.pulls.createReview({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
-            event: 'APPROVE'
-          });
-
-    - name: Wait for approval
-      if: ${{ steps.approval.outputs.result == 'APPROVAL' }}
-      run: |
-        echo "Approved! Proceeding with Terraform apply."
-      continue-on-error: true
-
     - name: Terraform apply
-      if: ${{ steps.approval.outputs.result == 'APPROVAL' }}
       run: terraform apply -auto-approve

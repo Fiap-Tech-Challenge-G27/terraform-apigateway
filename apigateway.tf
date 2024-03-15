@@ -5,9 +5,21 @@ variable "aws-region" {
 }
 
 terraform {
-  required_version = ">= 1.3, <= 1.7.4"
+  required_version = ">= 1.3, <= 1.7.5"
+
+  backend "s3" {
+    bucket         = "techchallengestate-g27"
+    key            = "terraform-apigateway/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
 
   required_providers {
+    
+    random = {
+      version = "~> 3.0"
+    }
+
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.65"
@@ -17,6 +29,15 @@ terraform {
 
 provider "aws" {
   region = var.aws-region
+}
+
+data "terraform_remote_state" "lambda" {
+  backend = "s3"
+  config = {
+    bucket = "techchallengestate-g27"
+    key    = "terraform-lambda/terraform.tfstate"
+    region = var.aws-region
+  }
 }
 
 resource "aws_api_gateway_rest_api" "api" {
@@ -44,7 +65,7 @@ resource "aws_api_gateway_integration" "lambda_integration" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.auth_lambda.invoke_arn
+  uri                     = data.terraform_remote_state.lambda.outputs.lambda_function_invoke_arn
 }
 
 # Deploy the API Gateway
@@ -59,7 +80,7 @@ resource "aws_api_gateway_deployment" "api_deployment" {
 resource "aws_lambda_permission" "api_gateway_invoke" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.auth_lambda.function_name
+  function_name = data.terraform_remote_state.lambda.outputs.lambda_function_name
   principal     = "apigateway.amazonaws.com"
 
   # Source ARN for the API Gateway method
