@@ -73,7 +73,7 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   depends_on = [aws_api_gateway_integration.lambda_integration]
 
   rest_api_id = aws_api_gateway_rest_api.api.id
-#   stage_name  = "prod"
+  stage_name  = "prod"
   triggers = {
     always_run = "${timestamp()}"
   }
@@ -87,5 +87,5 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
   principal     = "apigateway.amazonaws.com"
 
   # Source ARN for the API Gateway method
-  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/POST"
+  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/"
 }
