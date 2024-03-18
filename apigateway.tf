@@ -52,7 +52,7 @@ resource "aws_apigatewayv2_api" "techchallenge" {
 resource "aws_apigatewayv2_stage" "lambda" {
   api_id = aws_apigatewayv2_api.techchallenge.id
 
-  name        = "v1"
+  name        = "lanchonete"
   auto_deploy = true
 
   access_log_settings {
@@ -86,12 +86,12 @@ resource "aws_apigatewayv2_integration" "lanchonete" {
   api_id             = aws_apigatewayv2_api.techchallenge.id 
   integration_type   = "HTTP_PROXY"
   integration_uri = "http://${data.aws_lb.k8s_lb.dns_name}"
-  integration_method = "GET"
+  integration_method = "POST"
 }
 
 resource "aws_apigatewayv2_route" "lanchonete" {
   api_id    = aws_apigatewayv2_api.techchallenge.id 
-  route_key = "GET /lanchonete" 
+  route_key = "POST /lanchonete" 
   target    = "integrations/${aws_apigatewayv2_integration.lanchonete.id}"
 }
 
