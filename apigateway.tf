@@ -52,7 +52,7 @@ resource "aws_apigatewayv2_api" "techchallenge" {
 resource "aws_apigatewayv2_stage" "lambda" {
   api_id = aws_apigatewayv2_api.techchallenge.id
 
-  name        = "auth"
+  name        = "v1"
   auto_deploy = true
 
   access_log_settings {
