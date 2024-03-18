@@ -40,13 +40,17 @@ data "terraform_remote_state" "lambda" {
   }
 }
 
-resource "aws_apigatewayv2_api" "lambda" {
-  name          = "auth"
+data "aws_lb" "k8s_lb" {
+  name = "k8s-default-ingressb-97436f9206" 
+}
+
+resource "aws_apigatewayv2_api" "techchllaenge" {
+  name          = "techchallenge"
   protocol_type = "HTTP"
 }
 
 resource "aws_apigatewayv2_stage" "lambda" {
-  api_id = aws_apigatewayv2_api.lambda.id
+  api_id = aws_apigatewayv2_api.techchllanege.id
 
   name        = "auth"
   auto_deploy = true
@@ -71,12 +75,27 @@ resource "aws_apigatewayv2_stage" "lambda" {
 }
 
 resource "aws_apigatewayv2_integration" "auth_lambda" {
-  api_id = aws_apigatewayv2_api.lambda.id
+  api_id = aws_apigatewayv2_api.techchallenge.id
 
   integration_uri    = data.terraform_remote_state.lambda.outputs.lambda_function_invoke_arn
   integration_type   = "AWS_PROXY"
   integration_method = "POST"
 }
+
+resource "aws_apigatewayv2_integration" "lanchonete" {
+  api_id             = aws_apigatewayv2_api.techchllanege.id 
+  integration_type   = "HTTP_PROXY"
+  integration_uri    = data.aws_lb.k8s_lb.dns_name
+  integration_method = "GET"
+}
+
+resource "aws_apigatewayv2_route" "lanchonete" {
+  api_id    = aws_apigatewayv2_api.techchallenge.id 
+  route_key = "GET /lanchonete" 
+  target    = "integrations/${aws_apigatewayv2_integration.lanchonete.id}"
+}
+
+
 
 resource "aws_apigatewayv2_route" "auth_lambda" {
   api_id = aws_apigatewayv2_api.lambda.id
