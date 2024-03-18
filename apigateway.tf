@@ -124,9 +124,7 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_dynamic" {
 resource "aws_apigatewayv2_route" "api_routes_dynamic" {
   for_each  = aws_apigatewayv2_integration.http_proxy_integration_dynamic
   api_id    = aws_apigatewayv2_api.techchallenge.id
-  
-  route_key = "${each.value.integration_method} ${replace(replace(each.key, "{", "/{"), "}", "}")}"
-  
+  route_key = "${each.value.integration_method} /${replace(each.key, "/{", "/{proxy+}")}"
   target    = "integrations/${each.value.id}"
 }
 
