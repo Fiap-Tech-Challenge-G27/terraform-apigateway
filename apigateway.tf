@@ -91,7 +91,7 @@ resource "aws_apigatewayv2_integration" "lanchonete" {
 
 resource "aws_apigatewayv2_route" "lanchonete" {
   api_id    = aws_apigatewayv2_api.techchallenge.id 
-  route_key = "POST /lanchonete" 
+  route_key = "POST /orders" 
   target    = "integrations/${aws_apigatewayv2_integration.lanchonete.id}"
 }
 
