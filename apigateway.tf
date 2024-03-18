@@ -119,6 +119,7 @@ resource "aws_lambda_permission" "api_gw" {
   source_arn = "${aws_apigatewayv2_api.techchallenge.execution_arn}/*/*"
 }
 
+#
 # resource "aws_api_gateway_rest_api" "api" {
 #   name        = "AuthenticationAPI"
 #   description = "API for user authentication"
