@@ -50,7 +50,7 @@ resource "aws_apigatewayv2_api" "techchallenge" {
 }
 
 resource "aws_apigatewayv2_stage" "lambda" {
-  api_id = aws_apigatewayv2_api.techchllanege.id
+  api_id = aws_apigatewayv2_api.techchallenge.id
 
   name        = "auth"
   auto_deploy = true
@@ -83,7 +83,7 @@ resource "aws_apigatewayv2_integration" "auth_lambda" {
 }
 
 resource "aws_apigatewayv2_integration" "lanchonete" {
-  api_id             = aws_apigatewayv2_api.techchllanege.id 
+  api_id             = aws_apigatewayv2_api.techchallenge.id 
   integration_type   = "HTTP_PROXY"
   integration_uri    = data.aws_lb.k8s_lb.dns_name
   integration_method = "GET"
@@ -98,14 +98,14 @@ resource "aws_apigatewayv2_route" "lanchonete" {
 
 
 resource "aws_apigatewayv2_route" "auth_lambda" {
-  api_id = aws_apigatewayv2_api.lambda.id
+  api_id = aws_apigatewayv2_api.techchallenge.id
 
   route_key = "POST /auth"
   target    = "integrations/${aws_apigatewayv2_integration.auth_lambda.id}"
 }
 
 resource "aws_cloudwatch_log_group" "api_gw" {
-  name = "/aws/api_gw/${aws_apigatewayv2_api.lambda.name}"
+  name = "/aws/api_gw/${aws_apigatewayv2_api.techchallenge.name}"
 
   retention_in_days = 30
 }
@@ -116,7 +116,7 @@ resource "aws_lambda_permission" "api_gw" {
   function_name = data.terraform_remote_state.lambda.outputs.lambda_function_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+  source_arn = "${aws_apigatewayv2_api.techchallenge.execution_arn}/*/*"
 }
 
 # resource "aws_api_gateway_rest_api" "api" {
