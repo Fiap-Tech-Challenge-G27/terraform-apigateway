@@ -44,7 +44,7 @@ data "aws_lb" "k8s_lb" {
   name = "k8s-default-ingressb-97436f9206" 
 }
 
-resource "aws_apigatewayv2_api" "techchallaenge" {
+resource "aws_apigatewayv2_api" "techchallenge" {
   name          = "techchallenge"
   protocol_type = "HTTP"
 }
