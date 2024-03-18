@@ -82,20 +82,41 @@ resource "aws_apigatewayv2_integration" "auth_lambda" {
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_integration" "lanchonete" {
-  api_id             = aws_apigatewayv2_api.techchallenge.id 
+resource "aws_apigatewayv2_integration" "http_proxy_integration" {
+  for_each = toset([
+    "POST/categories",
+    "GET/categories",
+    "GET/categories/{slug}",
+    "PATCH/categories/{id}",
+    "POST/products",
+    "GET/products",
+    "PATCH/products/{id}",
+    "DELETE/products/{id}",
+    "POST/customers",
+    "GET/customers",
+    "GET/customers/{cpf}",
+    "PATCH/customers/{cpf}",
+    "DELETE/customers/{cpf}",
+    "POST/orders",
+    "GET/orders",
+    "GET/orders/{id}",
+    "PATCH/orders/{id}/state",
+    "POST/orders/webhooks/payment-confirmation",
+    "GET/health"
+  ])
+
+  api_id             = aws_apigatewayv2_api.techchallenge.id
   integration_type   = "HTTP_PROXY"
-  integration_uri = "http://k8s-default-ingressb-97436f9206-1321282544.us-east-1.elb.amazonaws.com/customers"
-  integration_method = "GET"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/${each.key}"
+  integration_method = split("/", each.key)[0]
 }
 
-resource "aws_apigatewayv2_route" "lanchonete" {
-  api_id    = aws_apigatewayv2_api.techchallenge.id 
-  route_key = "GET /customers" 
-  target    = "integrations/${aws_apigatewayv2_integration.lanchonete.id}"
+resource "aws_apigatewayv2_route" "api_routes" {
+  for_each  = aws_apigatewayv2_integration.http_proxy_integration
+  api_id    = aws_apigatewayv2_api.techchallenge.id
+  route_key = "${each.value.integration_method} /${split("/", each.key)[1]}"
+  target    = "integrations/${each.value.id}"
 }
-
-
 
 resource "aws_apigatewayv2_route" "auth_lambda" {
   api_id = aws_apigatewayv2_api.techchallenge.id
