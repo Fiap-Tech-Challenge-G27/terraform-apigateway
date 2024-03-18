@@ -85,7 +85,7 @@ resource "aws_apigatewayv2_integration" "auth_lambda" {
 resource "aws_apigatewayv2_integration" "lanchonete" {
   api_id             = aws_apigatewayv2_api.techchallenge.id 
   integration_type   = "HTTP_PROXY"
-  integration_uri = "http://k8s-default-ingressb-97436f9206-1321282544.us-east-1.elb.amazonaws.com/"
+  integration_uri = "http://k8s-default-ingressb-97436f9206-1321282544.us-east-1.elb.amazonaws.com/customers"
   integration_method = "GET"
 }
 
