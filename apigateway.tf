@@ -97,7 +97,7 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_basic" {
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
   integration_type   = "HTTP_PROXY"
-  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/${each.key}"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/${join("/", slice(split("/", each.key), 1, length(split("/", each.key))))}"
   integration_method = split("/", each.key)[0]
 }
 
@@ -117,7 +117,7 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_dynamic" {
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
   integration_type   = "HTTP_PROXY"
-  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/${each.key}"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/${join("/", slice(split("/", each.key), 1, length(split("/", each.key))))}"
   integration_method = split("/", each.key)[0]
 }
 
