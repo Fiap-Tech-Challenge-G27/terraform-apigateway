@@ -157,3 +157,7 @@ resource "aws_lambda_permission" "api_gw" {
 
   source_arn = "${aws_apigatewayv2_api.techchallenge.execution_arn}/*/*"
 }
+
+output "aws_apigatewayv2_api_endpoint" {
+  value = aws_apigatewayv2_api.techchallenge.api_endpoint
+}
