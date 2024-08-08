@@ -82,6 +82,14 @@ resource "aws_apigatewayv2_integration" "auth_lambda" {
   integration_method = "POST"
 }
 
+resource "aws_apigatewayv2_integration" "delete_lambda" {
+  api_id = aws_apigatewayv2_api.techchallenge.id
+
+  integration_uri    = data.terraform_remote_state.lambda.outputs.deletelambda_function_invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+
 resource "aws_apigatewayv2_integration" "http_proxy_integration_basic" {
   for_each = toset([
     "POST/categories",
@@ -195,6 +203,13 @@ resource "aws_apigatewayv2_route" "auth_lambda" {
   target    = "integrations/${aws_apigatewayv2_integration.auth_lambda.id}"
 }
 
+resource "aws_apigatewayv2_route" "delete_lambda" {
+  api_id = aws_apigatewayv2_api.techchallenge.id
+
+  route_key = "POST /customers/delete"
+  target    = "integrations/${aws_apigatewayv2_integration.delete_lambda.id}"
+}
+
 resource "aws_cloudwatch_log_group" "api_gw" {
   name = "/aws/api_gw/${aws_apigatewayv2_api.techchallenge.name}"
 
@@ -205,6 +220,15 @@ resource "aws_lambda_permission" "api_gw" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = data.terraform_remote_state.lambda.outputs.authlambda_function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.techchallenge.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "api_gw" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = data.terraform_remote_state.lambda.outputs.deletelambda_function_name
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.techchallenge.execution_arn}/*/*"
