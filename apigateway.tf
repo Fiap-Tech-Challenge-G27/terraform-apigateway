@@ -216,7 +216,7 @@ resource "aws_cloudwatch_log_group" "api_gw" {
   retention_in_days = 30
 }
 
-resource "aws_lambda_permission" "api_gw" {
+resource "aws_lambda_permission" "api_gw_auth_lambda" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = data.terraform_remote_state.lambda.outputs.authlambda_function_name
@@ -225,7 +225,7 @@ resource "aws_lambda_permission" "api_gw" {
   source_arn = "${aws_apigatewayv2_api.techchallenge.execution_arn}/*/*"
 }
 
-resource "aws_lambda_permission" "api_gw" {
+resource "aws_lambda_permission" "api_gw_delete_lambda" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = data.terraform_remote_state.lambda.outputs.deletelambda_function_name
