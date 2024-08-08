@@ -112,7 +112,9 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_dynamic" {
     "DELETE/customers/{cpf}",
     "GET/orders/{id}",
     "PATCH/orders/{id}/state",
-    "POST/orders/webhooks/payment-confirmation",
+    "POST/orders/payment-confirmation",
+    "POST/customers/notification",
+    "POST/payment/initiate
   ])
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
