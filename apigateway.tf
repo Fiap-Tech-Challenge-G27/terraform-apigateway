@@ -77,7 +77,7 @@ resource "aws_apigatewayv2_stage" "lambda" {
 resource "aws_apigatewayv2_integration" "auth_lambda" {
   api_id = aws_apigatewayv2_api.techchallenge.id
 
-  integration_uri    = data.terraform_remote_state.lambda.outputs.lambda_function_invoke_arn
+  integration_uri    = data.terraform_remote_state.lambda.outputs.authlambda_function_invoke_arn
   integration_type   = "AWS_PROXY"
   integration_method = "POST"
 }
