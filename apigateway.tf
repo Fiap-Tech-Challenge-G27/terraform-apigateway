@@ -168,6 +168,19 @@ resource "aws_apigatewayv2_route" "api_route_payment_initiate" {
   target    = "integrations/${aws_apigatewayv2_integration.http_proxy_integration_payment_initiate.id}"
 }
 
+resource "aws_apigatewayv2_integration" "http_proxy_integration_payment_toggle" {
+  api_id             = aws_apigatewayv2_api.techchallenge.id
+  integration_type   = "HTTP_PROXY"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/payment/toggle"
+  integration_method = "PUT"
+}
+
+resource "aws_apigatewayv2_route" "api_route_payment_initiate" {
+  api_id    = aws_apigatewayv2_api.techchallenge.id
+  route_key = "PUT /payment/toggle"
+  target    = "integrations/${aws_apigatewayv2_integration.http_proxy_integration_payment_toggle.id}"
+}
+
 resource "aws_apigatewayv2_route" "api_routes_basic" {
   for_each  = aws_apigatewayv2_integration.http_proxy_integration_basic
   api_id    = aws_apigatewayv2_api.techchallenge.id
