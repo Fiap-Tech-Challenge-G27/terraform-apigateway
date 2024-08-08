@@ -92,7 +92,10 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_basic" {
     "GET/customers",
     "POST/orders",
     "GET/orders",
-    "GET/health"
+    "GET/health",
+    "POST/orders/payment-confirmation",
+    "POST/customers/notification",
+    "POST/payment/initiate"
   ])
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
@@ -111,10 +114,7 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_dynamic" {
     "PATCH/customers/{cpf}",
     "DELETE/customers/{cpf}",
     "GET/orders/{id}",
-    "PATCH/orders/{id}/state",
-    "POST/orders/payment-confirmation",
-    "POST/customers/notification",
-    "POST/payment/initiate"
+    "PATCH/orders/{id}/state"
   ])
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
