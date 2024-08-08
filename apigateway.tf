@@ -114,7 +114,7 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_dynamic" {
     "PATCH/orders/{id}/state",
     "POST/orders/payment-confirmation",
     "POST/customers/notification",
-    "POST/payment/initiate
+    "POST/payment/initiate"
   ])
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
