@@ -92,7 +92,8 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_basic" {
     "GET/customers",
     "POST/orders",
     "GET/orders",
-    "GET/health"
+    "GET/health",
+    "POST/payment"
   ])
 
   api_id             = aws_apigatewayv2_api.techchallenge.id
