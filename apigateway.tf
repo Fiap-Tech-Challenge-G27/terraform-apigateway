@@ -175,7 +175,7 @@ resource "aws_apigatewayv2_integration" "http_proxy_integration_payment_toggle" 
   integration_method = "PUT"
 }
 
-resource "aws_apigatewayv2_route" "api_route_payment_initiate" {
+resource "aws_apigatewayv2_route" "api_route_payment_toggle" {
   api_id    = aws_apigatewayv2_api.techchallenge.id
   route_key = "PUT /payment/toggle"
   target    = "integrations/${aws_apigatewayv2_integration.http_proxy_integration_payment_toggle.id}"
