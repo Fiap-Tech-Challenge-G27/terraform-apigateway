@@ -129,6 +129,45 @@ resource "aws_apigatewayv2_route" "api_routes_dynamic" {
   target    = "integrations/${each.value.id}"
 }
 
+resource "aws_apigatewayv2_integration" "http_proxy_integration_payment_confirmation" {
+  api_id             = aws_apigatewayv2_api.techchallenge.id
+  integration_type   = "HTTP_PROXY"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/orders/payment-confirmation"
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "api_route_payment_confirmation" {
+  api_id    = aws_apigatewayv2_api.techchallenge.id
+  route_key = "POST /orders/payment-confirmation"
+  target    = "integrations/${aws_apigatewayv2_integration.http_proxy_integration_payment_confirmation.id}"
+}
+
+resource "aws_apigatewayv2_integration" "http_proxy_integration_customers_notification" {
+  api_id             = aws_apigatewayv2_api.techchallenge.id
+  integration_type   = "HTTP_PROXY"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/customers/notification"
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "api_route_customers_notification" {
+  api_id    = aws_apigatewayv2_api.techchallenge.id
+  route_key = "POST /customers/notification"
+  target    = "integrations/${aws_apigatewayv2_integration.http_proxy_integration_customers_notification.id}"
+}
+
+resource "aws_apigatewayv2_integration" "http_proxy_integration_payment_initiate" {
+  api_id             = aws_apigatewayv2_api.techchallenge.id
+  integration_type   = "HTTP_PROXY"
+  integration_uri    = "http://${data.aws_lb.k8s_lb.dns_name}/payment/initiate"
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "api_route_payment_initiate" {
+  api_id    = aws_apigatewayv2_api.techchallenge.id
+  route_key = "POST /payment/initiate"
+  target    = "integrations/${aws_apigatewayv2_integration.http_proxy_integration_payment_initiate.id}"
+}
+
 resource "aws_apigatewayv2_route" "api_routes_basic" {
   for_each  = aws_apigatewayv2_integration.http_proxy_integration_basic
   api_id    = aws_apigatewayv2_api.techchallenge.id
